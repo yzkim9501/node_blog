@@ -21,7 +21,6 @@
 
 	// Play initial animations on page load.
 		$window.on('load', function() {
-			console.log("test")
 			showPosts()
 			window.setTimeout(function() {
 				$body.removeClass('is-preload');
@@ -38,7 +37,7 @@ function showPosts(){
 			let posts = response["posts"];
 			for (let i = 0; i < posts.length; i++) {
 			$('#posts-body').append(`
-			<tr>
+			<tr onclick="window.location='/detail?postId=${posts[i]['postId']}';">
 				<td>${posts[i]['postId']}</td>
 				<td>${posts[i]['title']}</td>
 				<td>${posts[i]['author']}</td>
