@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();//라우터라고 선언한다.
-
+const url = require('url');   
 const Post = require("../schemas/Post");
 
 router.get("/post", async (req, res, next) => {
@@ -27,7 +27,9 @@ router.post('/post', async (req, res) => {
   const { title, content, author, password} = req.body;
   const date=(new Date().format("yyyy-MM-dd a/p hh:mm:ss"))
   await Post.create({ postId, title, content, author, date, password });
-  res.send({ result: "success" });
+  res.redirect(url.format({
+    pathname:"/"
+  }))
 });
 
 //포스트 삭제
