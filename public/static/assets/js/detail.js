@@ -21,6 +21,8 @@ function showPost(id){
 			$('#content').val(post['content'])
 			$('#date').val(post['date'])
 			$('#author').val(post['author'])
+			$('#postId').val(post['postId'])
 		}
 	});
+
 }

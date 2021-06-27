@@ -11,6 +11,29 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="/static/assets/css/main.css" />
 		<script>
+      function modify(){
+        if($('#title').is(":disabled")){
+          $("#title").removeAttr("disabled");
+          $("#content").removeAttr("disabled");
+          $("#password").removeAttr("disabled");
+          $("#author").removeAttr("disabled");
+          $("#mod").val("저장");
+        }
+        else{
+          $("#mod-form")[0].submit();
+            redirect();
+        }
+      }
+      function deletePost(){
+        $.ajax({
+          type: "DELETE",
+          url: `/api/post/`+$('#postId').val(),
+          data: {},
+          success: function(response) {
+            redirect();
+          }
+          });
+      }
 				function redirect(){
 					window.location.href="/";
 				}
@@ -31,7 +54,7 @@
 			<div id="main">
 				<div class="box alt container">
 					<section>
-						<form method="post" action="/api/post">
+						<form method="patch" action="/api/post" id="mod-form">
 							<div class="row">
 								<div class="col-12">
 									<input type="text" name="title" id="title" disabled/>
@@ -48,10 +71,11 @@
 								<div class="col-12">
 									<textarea name="content" id="content" rows="6"disabled></textarea>
 								</div>
+                <input type='hidden' id="postId"/>
 								<div class="col-12">
 									<ul class="actions special">
-										<li><input type="submit" value="수정" onclick="redirect()"/></li>
-										<li><input type="submit" value="삭제" onclick="redirect()"/></li>
+										<li><input type="button" id="mod" value="수정" onclick="modify()"/></li>
+										<li><input type="button" id="del" value="삭제" onclick="deletePost()"/></li>
 									</ul>
 								</div>
 							</div>
