@@ -23,7 +23,10 @@ router.get("/post/:postId", async (req, res) => {
 //포스트 게시
 router.post('/post', async (req, res) => {
   const recentPost = await Post.find().sort("-postId").limit(1);
-  const postId=recentPost[0]['postId']+1
+  const postId=1;
+  if(recentPost.length!=0){
+    postId=recentPost[0]['postId']+1
+  }
   const { title, content, author, password} = req.body;
   const date=(new Date().format("yyyy-MM-dd a/p hh:mm:ss"))
   await Post.create({ postId, title, content, author, date, password });
@@ -35,18 +38,27 @@ router.post('/post', async (req, res) => {
 //포스트 삭제
 router.delete("/post/:postId", async (req, res) => {
   const { postId } = req.params;
-  await Post.deleteOne({ postId });
-  res.send({ result: "success" });
+  const { password } = req.body;
+  isExist = await Post.find({ postId });
+  if(isExist[0]['password']==password){
+    await Post.deleteOne({ postId });
+    res.send({ result: "success" });
+  }else{
+    res.send({result : "failed"});
+  }
 });
 
 //포스트 수정
   router.patch("/post/:postId", async (req, res) => {
     const { postId } = req.params;
     const { title, content, author, date, password } = req.body;
-  
-    console.log(postId, title, content, author, date, password);
-    await Post.updateOne({ postId }, { $set: { postId, title, content, author, date, password } });
-    res.send({ result: "success" });
+    isExist = await Post.find({ postId });
+    if(isExist[0]['password']==password){
+      await Post.updateOne({ postId }, { $set: { postId, title, content, author, date, password } });
+      res.send({ result: "success" });
+    }else{
+      res.send({result : "failed"});
+    }
   })
 
 module.exports = router;//얘 라우터라고 알려주는거임

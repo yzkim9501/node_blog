@@ -20,17 +20,35 @@
           $("#mod").val("저장");
         }
         else{
-          $("#mod-form")[0].submit();
-            redirect();
+        $.ajax({
+          type: "PATCH",
+          url: `/api/post/`+$('#postId').val(),
+          data: {title:$('#title').val(),content:$('#content').val(),password:$('#password').val(),author:$('#author').val()},
+          success: function(response) {
+			  if(response['result']=='success'){
+            	alert("수정되었습니다.")
+				redirect();
+			  }
+			  else{
+				  alert("비밀번호가 다릅니다.")
+			  }
+          }
+          });
         }
       }
       function deletePost(){
         $.ajax({
           type: "DELETE",
           url: `/api/post/`+$('#postId').val(),
-          data: {},
+          data: {password:$('#password').val()},
           success: function(response) {
-            redirect();
+			  if(response['result']=='success'){
+            	alert("삭제되었습니다.")
+				redirect();
+			  }
+			  else{
+				  alert("비밀번호가 다릅니다.")
+			  }
           }
           });
       }
@@ -54,7 +72,7 @@
 			<div id="main">
 				<div class="box alt container">
 					<section>
-						<form method="patch" action="/api/post" id="mod-form">
+						<div id="mod-form">
 							<div class="row">
 								<div class="col-12">
 									<input type="text" name="title" id="title" disabled/>
@@ -71,7 +89,7 @@
 								<div class="col-12">
 									<textarea name="content" id="content" rows="6"disabled></textarea>
 								</div>
-                <input type='hidden' id="postId"/>
+                				<input type='hidden' id="postId"/>
 								<div class="col-12">
 									<ul class="actions special">
 										<li><input type="button" id="mod" value="수정" onclick="modify()"/></li>
@@ -79,7 +97,7 @@
 									</ul>
 								</div>
 							</div>
-						</form> 
+						</div> 
 					</section>
 				</div>
 			</div>
