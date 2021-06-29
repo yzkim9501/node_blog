@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();//라우터라고 선언한다.
 const url = require('url');   
-const Post = require("../schemas/Post");
+const Post = require("../schemas/post");
 
+//url/post?category=drink
 router.get("/post", async (req, res, next) => {
   try {
     const { category } = req.query;
@@ -14,6 +15,8 @@ router.get("/post", async (req, res, next) => {
   }
 });
 //포스트 상세 조회
+
+//url/post/6
 router.get("/post/:postId", async (req, res) => {
   const { postId } = req.params;
   post = await Post.findOne({ postId: postId });
@@ -23,7 +26,7 @@ router.get("/post/:postId", async (req, res) => {
 //포스트 게시
 router.post('/post', async (req, res) => {
   const recentPost = await Post.find().sort("-postId").limit(1);
-  const postId=1;
+  let postId=1;
   if(recentPost.length!=0){
     postId=recentPost[0]['postId']+1
   }
