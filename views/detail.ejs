@@ -104,13 +104,14 @@
 						<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 						<div class="container">
 						<div class="be-comment-block" id="comment-block">
-							<h1 class="comments-title">Comments (3)</h1>
+							<h1 class="comments-title">Comments </h1>
 							<form method="post" action="/api/comment">
 								<input type="hidden" id="commentPostId" name="postId"/>
 								<input type="hidden" name="author" value="1"/>
 									<div class="col-xs-12">									
 										<div class="form-group">
-											<textarea class="form-input" name="content" required="" placeholder="Your text"></textarea>
+											<textarea class="form-input" name="content" required placeholder="Your text"
+											oninvalid="alert('댓글 내용을 입력해주세요.')"></textarea>
 										</div>
 									</div>
 									<button type="submit" class="btn btn-primary pull-right">submit</button>

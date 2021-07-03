@@ -60,14 +60,17 @@ function showComment(id){
 	});
 }
 function deleteComment(id){
-	$.ajax({
-		type: "DELETE",
-		url: '/api/comment/'+id,
-		data: {},
-		success: function(response) {
-			window.location.reload();
-		}
-	});
+	let confAlert = confirm("정말로 삭제하시겠습니까?");
+	if(confAlert==true){
+		$.ajax({
+			type: "DELETE",
+			url: '/api/comment/'+id,
+			data: {},
+			success: function(response) {
+				window.location.reload();
+			}
+		});
+	}
 }
 function modifyComment(id){
 	if($('#modCom'+id).text()=="수정"){
@@ -83,13 +86,20 @@ function modifyComment(id){
 		$('#modCom'+id).html('수정 완료')
 	}
 	else{
-		$.ajax({
-			type: "PATCH",
-			url: '/api/comment/',
-			data: {commentId:id, content:$('#content'+id).val()},
-			success: function(response) {
-				window.location.reload();
-			}
-		});
+		if($.trim($('#content'+id).val())==""){
+			alert("내용을 입력해주세요.")
+			return;
+		}
+		let confAlert = confirm("정말로 수정하시겠습니까?");
+		if(confAlert==true){
+			$.ajax({
+				type: "PATCH",
+				url: '/api/comment/',
+				data: {commentId:id, content:$('#content'+id).val()},
+				success: function(response) {
+					window.location.reload();
+				}
+			});
+		}
 	}
 }
