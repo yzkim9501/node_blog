@@ -9,7 +9,9 @@ app.use(express.json())
 app.use(express.static('public'))
 
 const postRouter = require("./routers/post");//라우터를 생성한다. goods.js파일을 라우터로 사용한다.
-app.use("/api", [postRouter]);//api를 호출해서 get등의 방식으로 데이터를 리턴한다
+const commentRouter = require("./routers/comment");//라우터를 생성한다. goods.js파일을 라우터로 사용한다.
+app.use("/api", [postRouter]);//api를 호출해서 get등의 방식으로 데이터를 리턴한
+app.use("/api", [commentRouter]);//api를 호출해서 get등의 방식으로 데이터를 리턴한다다
 
 app.set('views', __dirname + '/views');//view 엔진 추가를 위한 코드
 app.set('view engine', 'ejs');//ejs를 사용한다. html과의 차이는 ejs에서는 html파트에 바로 자바스크립트 코드 사용 가능. https://jinbroing.tistory.com/107
