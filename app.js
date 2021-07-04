@@ -1,6 +1,9 @@
 const express = require('express') //express를 쓴다
+const Joi = require("joi");
+const jwt = require("jsonwebtoken");
 const app = express()
 const port = 3000// port 는 3000번
+const authMiddleware = require("./middlewares/auth-middleware");
 
 const connect=require('./schemas');
 connect()
@@ -8,10 +11,12 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(express.static('public'))
 
-const postRouter = require("./routers/post");//라우터를 생성한다. goods.js파일을 라우터로 사용한다.
-const commentRouter = require("./routers/comment");//라우터를 생성한다. goods.js파일을 라우터로 사용한다.
-app.use("/api", [postRouter]);//api를 호출해서 get등의 방식으로 데이터를 리턴한
-app.use("/api", [commentRouter]);//api를 호출해서 get등의 방식으로 데이터를 리턴한다다
+const postRouter = require("./routers/post");
+const commentRouter = require("./routers/comment");
+const userRouter = require("./routers/user");
+app.use("/api", [postRouter]);
+app.use("/api", [commentRouter]);
+app.use("/", [userRouter]);
 
 app.set('views', __dirname + '/views');//view 엔진 추가를 위한 코드
 app.set('view engine', 'ejs');//ejs를 사용한다. html과의 차이는 ejs에서는 html파트에 바로 자바스크립트 코드 사용 가능. https://jinbroing.tistory.com/107
@@ -25,6 +30,13 @@ app.get('/', (req, res)=>{
 });
 app.get('/new', (req, res)=>{
   res.render('newpost');
+});
+
+app.get('/login', (req, res)=>{
+  res.render('login');
+});
+app.get('/join', (req, res)=>{
+  res.render('join');
 });
 app.get('/detail', (req, res)=>{// localhost:5000/detail?goodsId=10의 형식으로 사용, id를 가져온다
   let id = req.query.postId;

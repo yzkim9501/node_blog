@@ -6,15 +6,28 @@
 -->
 <html>
 	<head>
-		<title>블로그 | 메인</title>
+		<title>블로그 | 상세</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="/static/assets/css/main.css" />
-		<style>
-			#posts-body{
-				cursor: pointer;
+		<link rel="stylesheet" href="/static/assets/css/detail.css" />
+		<script>
+			function login(){
+				$.ajax({
+					type: "POST",
+					url: `/auth`,
+					data: {password:$('#password').val(),email:$('#email').val()},
+					success: function (response) {
+						localStorage.setItem("token", response.token);
+						window.location.replace("/");
+					},
+					error: function (error) {
+						alert(error.responseJSON.errorMessage);
+					},
+					});
 			}
-		</style>
+			
+		</script>
 	</head>
 	<body class="is-preload">
 
@@ -24,44 +37,23 @@
 				<span class="logo icon fa-paper-plane"></span>
 				<h1>Hanghae99</h1>
 				<p>Node.js Blog / board</p>
-				<a href="/login">로그인</a>
-				<a href="/join">회원가입</a>
 			</div>
     </a>
 
 		<!-- Main -->
 			<div id="main">
 				<div class="box alt container">
-					<section>
-						<header>
-							<h3>게시글</h3>
-						</header>
-						<div class="table-wrapper">
-							<table class="default">
-								<thead>
-									<tr>
-										<th>#</th>
-										<th>title</th>
-										<th>author</th>
-										<th>date</th>
-									</tr>
-								</thead>
-								<tbody id='posts-body'>
-								</tbody>
-							</table>
-						</div>
-					</section>
-					<a href="/new"class="button">글쓰기</a>
+						<input type="email" id="email" name="email" placeholder="email" />
+						<input type="password" id="password" name="password" placeholder="password" />
+						<button onclick="login()">로그인</button>
+						<a href="/join">회원가입</a>
 				</div>
 			</div>
-
 
 		<!-- Scripts -->
 			<script src="/static/assets/js/jquery.min.js"></script>
 			<script src="/static/assets/js/browser.min.js"></script>
 			<script src="/static/assets/js/breakpoints.min.js"></script>
-			<script src="/static/assets/js/util.js"></script>
-			<script src="/static/assets/js/main.js"></script>
 
 	</body>
 </html>

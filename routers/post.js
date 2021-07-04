@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();//라우터라고 선언한다.
 const url = require('url');   
 const Post = require("../schemas/post");
+const authMiddleware = require("../middlewares/auth-middleware");
 
 //url/post?category=drink
 router.get("/post", async (req, res, next) => {

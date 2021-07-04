@@ -23,7 +23,9 @@ function showPost(id){
 			$('#date').val(post['date'])
 			$('#author').val(post['author'])
 			$('#postId').val(post['postId'])
-		}
+		},error: function (error) {
+			alert(error.responseJSON.errorMessage);
+		},
 	});
 }
 
