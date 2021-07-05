@@ -11,7 +11,7 @@ router.get("/Allcomment/:postId", authMiddleware, async (req, res, next) => {
     const { postId } = req.params;
     let comments = await Comment.find({ postId }).sort("-date").lean();
     for(let i=0;i<comments.length;i++){
-      if(res.locals.user!=null &&comments[i]['author']==res.locals['user']['_id']){
+      if(res.locals.user!=null &&comments[i]['author']==res.locals['user']['nickname']){
         comments[i]['mine']=true
       }else comments[i]['mine']=false
     }
@@ -36,7 +36,7 @@ router.post('/comment', authMiddleware, async (req, res) => {
   if(recentComment.length!=0){
     commentId=recentComment[0]['commentId']+1
   }
-  const author=res.locals['user']['_id']
+  const author=res.locals['user']['nickname']
   const { postId, content} = req.body;
   const date=(new Date().format("yyyy-MM-dd a/p hh:mm:ss"))
   await Comment.create({ commentId, postId, content, author, date });

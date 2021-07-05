@@ -25,6 +25,12 @@
 			window.setTimeout(function() {
 				$body.removeClass('is-preload');
 			}, 100);
+			if (localStorage.getItem("token")) {
+				$('#header').append(`<button onclick="logout()">로그아웃</button>`)
+			}else{
+				$('#header').append(`<a href="/login">로그인</a>
+				<a href="/join">회원가입</a>`)
+			}
 		});
 
 })(jQuery);

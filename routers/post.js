@@ -23,7 +23,7 @@ router.get("/post/:postId", authMiddleware, async (req, res) => {
   const { postId } = req.params;
   let mine=false;
   post = await Post.findOne({ postId: postId });
-  if(res.locals.user!=null && post['author']==res.locals['user']['_id']){
+  if(res.locals.user!=null && post['author']==res.locals['user']['nickname']){
     mine=true
   }
   res.json({ detail: post ,mine:mine});
@@ -37,7 +37,7 @@ router.post('/post', authMiddleware, async (req, res) => {
     postId=recentPost[0]['postId']+1
   }
   const { title, content} = req.body;
-  const author=res.locals['user']['_id']
+  const author=res.locals['user']['nickname']
   const date=(new Date().format("yyyy-MM-dd a/p hh:mm:ss"))
   await Post.create({ postId, title, content, author, date });
   res.redirect(url.format({
