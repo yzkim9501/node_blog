@@ -1,6 +1,7 @@
 
 	var	$window = $(window),$body = $('body');
 $window.on('load', function() {
+	console.log("onload")
 	let searchParams = new URLSearchParams(window.location.search)
 	let postId = searchParams.get('postId')
 	showPost(postId)
@@ -11,20 +12,31 @@ $window.on('load', function() {
 	}, 100);
 });
 function showPost(id){
+	console.log("showPost")
 	$.ajax({
 		type: "GET",
 		url: '/api/post/'+id,
+		headers: {
+			"Authorization": `Bearer ${localStorage.getItem("token")}`,
+		  },
 		data: {},
 		success: function(response) {
 			let post = response["detail"];
-			console.log(post)
 			$('#title').val(post['title'])
 			$('#content').val(post['content'])
 			$('#date').val(post['date'])
 			$('#author').val(post['author'])
 			$('#postId').val(post['postId'])
+			if(response["mine"]){
+				$('#ifmine').append(`
+				<li><input type="button" id="mod" value="수정" onclick="modify()"/></li>
+				<li><input type="button" id="del" value="삭제" onclick="deletePost()"/></li>
+				`)
+			}
+
 		},error: function (error) {
-			alert(error.responseJSON.errorMessage);
+			console.log(error)
+			alert(error)
 		},
 	});
 }
@@ -33,12 +45,17 @@ function showComment(id){
 	$.ajax({
 		type: "GET",
 		url: '/api/Allcomment/'+id,
+		headers: {
+			"Authorization": `Bearer ${localStorage.getItem("token")}`,
+		  },
 		data: {},
 		success: function(response) {
 			let comments = response['comments']
+			console.log(comments)
 			for(comment of comments){
+				if(comment['mine']){
 				let temp_html=`<div class="be-comment">
-				<div class="be-comment-content">
+				<div class="be-comment-content" id="comment-${comment['commentId']}">
 					<input type="hidden" id="${comment['commentId']}" />
 					<span class="be-comment-name">
 						<a href="blog-detail-2.html">${comment['author']}</a>
@@ -57,6 +74,26 @@ function showComment(id){
 				</div>
 			</div>`
 			$('#comment-block').append(temp_html);
+				} else{
+					
+				let temp_html=`<div class="be-comment">
+				<div class="be-comment-content" id="comment-${comment['commentId']}">
+					<input type="hidden" id="${comment['commentId']}" />
+					<span class="be-comment-name">
+						<a href="blog-detail-2.html">${comment['author']}</a>
+					</span>
+					<span class="be-comment-time">
+						<i class="fa fa-clock-o"></i>
+						${comment['date']}
+					</span>
+					<p class="be-comment-text" style="margin-bottom:0" id="commentContent${comment['commentId']}">
+					${comment['content']}
+					</p>
+				</div>
+			</div>`
+			$('#comment-block').append(temp_html);
+				
+				}
 			}
 		}
 	});
@@ -105,3 +142,66 @@ function modifyComment(id){
 		}
 	}
 }
+
+function postComment(){
+	console.log($('#commentContent').val())
+	$.ajax({
+		type: "POST",
+		url: `/api/comment`,
+		headers: {
+				"Authorization": `Bearer ${localStorage.getItem("token")}`,
+			},
+		data: {postId:$('#commentPostId').val(),content:$('#commentContent').val()},
+		success: function (response) {
+			window.location.replace("/");
+		},
+		error: function (error) {
+			console.log(error)
+			alert(error);
+		},
+		});
+}
+function modify(){
+if($('#title').is(":disabled")){
+  $("#title").removeAttr("disabled");
+  $("#content").removeAttr("disabled");
+  $("#password").removeAttr("disabled");
+  $("#author").removeAttr("disabled");
+  $("#mod").val("저장");
+}
+else{
+$.ajax({
+  type: "PATCH",
+  url: `/api/post/`+$('#postId').val(),
+  data: {title:$('#title').val(),content:$('#content').val(),password:$('#password').val(),author:$('#author').val()},
+  success: function(response) {
+	  if(response['result']=='success'){
+		alert("수정되었습니다.")
+		redirect();
+	  }
+	  else{
+		  alert("비밀번호가 다릅니다.")
+	  }
+  }
+  });
+}
+}
+function deletePost(){
+$.ajax({
+  type: "DELETE",
+  url: `/api/post/`+$('#postId').val(),
+  data: {password:$('#password').val()},
+  success: function(response) {
+	  if(response['result']=='success'){
+		alert("삭제되었습니다.")
+		redirect();
+	  }
+	  else{
+		  alert("비밀번호가 다릅니다.")
+	  }
+  }
+  });
+}
+		function redirect(){
+			window.location.href="/";
+		}

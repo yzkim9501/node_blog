@@ -18,22 +18,28 @@ router.get("/post", async (req, res, next) => {
 //포스트 상세 조회
 
 //url/post/6
-router.get("/post/:postId", async (req, res) => {
+router.get("/post/:postId", authMiddleware, async (req, res) => {
+  console.log("get")
   const { postId } = req.params;
+  let mine=false;
   post = await Post.findOne({ postId: postId });
-  res.json({ detail: post });
+  if(res.locals.user!=null && post['author']==res.locals['user']['_id']){
+    mine=true
+  }
+  res.json({ detail: post ,mine:mine});
 });
 
 //포스트 게시
-router.post('/post', async (req, res) => {
+router.post('/post', authMiddleware, async (req, res) => {
   const recentPost = await Post.find().sort("-postId").limit(1);
   let postId=1;
   if(recentPost.length!=0){
     postId=recentPost[0]['postId']+1
   }
-  const { title, content, author, password} = req.body;
+  const { title, content} = req.body;
+  const author=res.locals['user']['_id']
   const date=(new Date().format("yyyy-MM-dd a/p hh:mm:ss"))
-  await Post.create({ postId, title, content, author, date, password });
+  await Post.create({ postId, title, content, author, date });
   res.redirect(url.format({
     pathname:"/"
   }))

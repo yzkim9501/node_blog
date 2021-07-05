@@ -22,32 +22,7 @@
 			  }
 			}
 		  </style>
-		<script>
-			 function sign_up() {
-        const nickname = $("#inputNickname").val();
-        const email = $("#inputEmail").val();
-        const password1 = $("#inputPassword1").val();
-        const password2 = $("#inputPassword2").val();
-
-        $.ajax({
-          type: "POST",
-          url: "/users",
-          data: {
-            nickname: nickname,
-            email: email,
-            password: password1,
-            confirmPassword: password2,
-          },
-          success: function (response) {
-            alert("회원가입을 축하드립니다!")
-              window.location.replace("/login");
-          },
-          error: function (error) {
-            alert(error.responseJSON.errorMessage);
-          },
-        });
-      }
-		</script>
+		  	
 	</head>
 	<body class="is-preload">
 
@@ -158,6 +133,38 @@
 			<script src="/static/assets/js/jquery.min.js"></script>
 			<script src="/static/assets/js/browser.min.js"></script>
 			<script src="/static/assets/js/breakpoints.min.js"></script>
-
+			<script src="/api.js"></script>
+			<script>
+				if (localStorage.getItem("token")) {
+				  getSelf(function () {
+					alert("이미 로그인이 되어있습니다.");
+					window.location.replace("/");
+				  });
+				}
+				 function sign_up() {
+			const nickname = $("#inputNickname").val();
+			const email = $("#inputEmail").val();
+			const password1 = $("#inputPassword1").val();
+			const password2 = $("#inputPassword2").val();
+	
+			$.ajax({
+			  type: "POST",
+			  url: "/users",
+			  data: {
+				nickname: nickname,
+				email: email,
+				password: password1,
+				confirmPassword: password2,
+			  },
+			  success: function (response) {
+				alert("회원가입을 축하드립니다!")
+				  window.location.replace("/login");
+			  },
+			  error: function (error) {
+				alert(error.responseJSON.errorMessage);
+			  },
+			});
+		  }
+			</script>
 	</body>
 </html>

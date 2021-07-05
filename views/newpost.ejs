@@ -10,11 +10,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="/static/assets/css/main.css" />
-		<script>
-				function redirect(){
-					window.location.href="/";
-				}
-		</script>
+
 	</head>
 	<body class="is-preload">
 
@@ -31,23 +27,17 @@
 			<div id="main">
 				<div class="box alt container">
 					<section>
-						<form method="post" action="/api/post">
+						<form>
 							<div class="row">
 								<div class="col-12">
-									<input type="text" name="title" placeholder="Title" />
-								</div>
-								<div class="col-6 col-12-mobilep">
-									<input type="text" name="author" placeholder="Author" />
-								</div>
-								<div class="col-6 col-12-mobilep">
-									<input type="password" name="password" placeholder="Password" />
+									<input type="text" id="title" placeholder="Title" />
 								</div>
 								<div class="col-12">
-									<textarea name="content" placeholder="Content" rows="6"></textarea>
+									<textarea id="content" placeholder="Content" rows="6"></textarea>
 								</div>
 								<div class="col-12">
 									<ul class="actions special">
-										<li><input type="submit" value="글쓰기" onclick="redirect()"/></li>
+										<li><input type="button" value="글쓰기" onclick="postPost()"/></li>
 									</ul>
 								</div>
 							</div>
@@ -60,6 +50,35 @@
 			<script src="/static/assets/js/jquery.min.js"></script>
 			<script src="/static/assets/js/browser.min.js"></script>
 			<script src="/static/assets/js/breakpoints.min.js"></script>
-
+			<script src="./api.js"></script>
+			<script>
+			console.log(localStorage.getItem("token"))
+			if (localStorage.getItem("token")==null) {
+			  getSelf(function () {
+				alert("로그인이 되어있지 않습니다. 메인 페이지로 이동합니다.");
+				window.location.replace("/");
+			  });
+			}
+			function postPost(){
+				$.ajax({
+					type: "POST",
+					url: `/api/post`,
+					headers: {
+							"Authorization": `Bearer ${localStorage.getItem("token")}`,
+						},
+					data: {content:$('#content').val(),title:$('#title').val()},
+					success: function (response) {
+						window.location.replace("/");
+					},
+					error: function (error) {
+						console.log(error)
+						alert(error);
+					},
+					});
+			}
+			function redirect(){
+				window.location.href="/";
+			}
+			</script>
 	</body>
 </html>

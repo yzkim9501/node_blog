@@ -29,7 +29,6 @@ router.post("/users", async (req, res) => {
       });
       return;
     }
-    console.log(password.indexOf(nickname))
     if(password.indexOf(nickname)>-1){
       res.status(400).send({
         errorMessage: "패스워드에 닉네임을 포함시킬 수 없습니다.",
@@ -67,12 +66,10 @@ const postAuthSchema = Joi.object({
   password: Joi.string().required(),
 });
 router.post("/auth", async (req, res) => {
-  console.log("AUTHENTICATION")
   try {
     const { email, password } = await postAuthSchema.validateAsync(req.body);
 
     const user = await User.findOne({ email, password }).exec();
-    console.log(user)
     if (!user) {
       res.status(400).send({
         errorMessage: "이메일 또는 패스워드가 잘못됐습니다.",
@@ -81,6 +78,7 @@ router.post("/auth", async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user.userId }, "my-secret-key");
+    console.log("user.js token:"+token)
     res.send({
       token,
     });
@@ -93,7 +91,6 @@ router.post("/auth", async (req, res) => {
 });
 
 router.get("/users/me", authMiddleware, async (req, res) => {
-  console.log(res.locals)
   const { user } = res.locals;
   res.send({
     user,

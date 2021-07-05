@@ -2,12 +2,19 @@ const express = require("express");
 const router = express.Router();//라우터라고 선언한다.
 const url = require('url');   
 const Comment = require("../schemas/comment");
+const authMiddleware = require("../middlewares/auth-middleware");
+const comment = require("../schemas/comment");
 
 //해당 포스트의 모든 댓글 조회
-router.get("/Allcomment/:postId", async (req, res, next) => {
+router.get("/Allcomment/:postId", authMiddleware, async (req, res, next) => {
   try {
     const { postId } = req.params;
-    const comments = await Comment.find({ postId }).sort("-date");
+    let comments = await Comment.find({ postId }).sort("-date").lean();
+    for(let i=0;i<comments.length;i++){
+      if(res.locals.user!=null &&comments[i]['author']==res.locals['user']['_id']){
+        comments[i]['mine']=true
+      }else comments[i]['mine']=false
+    }
     res.json({ comments: comments });
   } catch (err) {
     console.error(err);
@@ -23,13 +30,14 @@ router.get("/comment/:commentId", async (req, res) => {
 });
 
 //댓글 게시
-router.post('/comment', async (req, res) => {
+router.post('/comment', authMiddleware, async (req, res) => {
   const recentComment = await Comment.find().sort("-commentId").limit(1);
   let commentId=1;
   if(recentComment.length!=0){
     commentId=recentComment[0]['commentId']+1
   }
-  const { postId, content, author} = req.body;
+  const author=res.locals['user']['_id']
+  const { postId, content} = req.body;
   const date=(new Date().format("yyyy-MM-dd a/p hh:mm:ss"))
   await Comment.create({ commentId, postId, content, author, date });
   res.redirect(req.get('referer'));
