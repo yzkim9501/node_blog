@@ -40,7 +40,14 @@ function showPost(id){
 		},
 	});
 }
-
+function checkLogin(){
+	if (localStorage.getItem("token")==null) {
+		getSelf(function () {
+		  alert("로그인이 되어있지 않습니다. 메인 페이지로 이동합니다.");
+		  window.location.replace("/");
+		});
+	  }
+}
 function showComment(id){
 	$.ajax({
 		type: "GET",
