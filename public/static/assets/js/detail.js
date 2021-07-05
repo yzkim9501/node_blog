@@ -71,13 +71,13 @@ function showComment(id){
 						<i class="fa fa-clock-o"></i>
 						${comment['date']}
 					</span>
-					<p class="be-comment-text" style="margin-bottom:0" id="commentContent${comment['commentId']}">
-					${comment['content']}
-					</p>
 					<ul style="display:flex;float:right">
 						<li><button id="modCom${comment['commentId']}" onclick="modifyComment(${comment['commentId']})">수정</button></li>
 						<li><button id="delCom${comment['commentId']}" onclick="deleteComment(${comment['commentId']})">삭제</button></li>
 					</ul>
+					<p class="be-comment-text" style="margin-bottom:0" id="commentContent${comment['commentId']}">
+					${comment['content']}
+					</p>
 				</div>
 			</div>`
 			$('#comment-block').append(temp_html);
